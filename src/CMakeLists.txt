@@ -7,7 +7,8 @@ set (SWIG_CXX_DISABLE_WARNINGS -Wno-error
                                -Wno-delete-non-virtual-dtor
                                -Wno-unused-function
                                -Wno-maybe-uninitialized
-                               -Wno-strict-aliasing)
+                               -Wno-strict-aliasing
+                               -Wno-unused-but-set-variable)
 
 # If building under android, make sure swig gets an ANDROID flag
 if (ANDROID)
@@ -778,6 +779,22 @@ function(upm_module_init)
   # Create the target library from src/hdrs
   add_library (${libname} SHARED ${module_src} ${module_hpp})
 
+  # Add a upm_library_globals to all C++ libraries
+  if (NOT IS_C_LIBRARY)
+    # Share some GLOBAL (per library) info with the library (UPM version and library base name)
+    target_compile_definitions(${libname}
+        PRIVATE -DUPM_LIBRARY_BASE_NAME=${libname}
+                -DUPM_VERSION_STRING=${upm_VERSION_STRING})
+
+    # Add a source file which contains the shared GLOBAL info
+    target_sources(${libname}
+        PRIVATE ${CMAKE_SOURCE_DIR}/src/upm_library_globals.cxx
+                ${CMAKE_SOURCE_DIR}/src/upm_library_globals.hpp)
+
+    # This source depends on libdl (uses dladdr), make sure to link this
+    target_link_libraries (${libname} ${CMAKE_DL_LIBS})
+  endif()
+
   # Specify the current source directory as an INTERFACE include dir.
   # This allows for transitive header dependencies via target_link_libraries
   target_include_directories(${libname} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
@@ -837,8 +854,14 @@ function(upm_module_init)
       DESTINATION include/upm
       COMPONENT ${CMAKE_PROJECT_NAME}-dev)
 
-  # Install JSON library descriptor files into datadir (if they exist)
+  # Handle build/install for JSON library descriptor file
   if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${basename}.json")
+    # Copy JSON library descriptor file to binary directory (for testing/running from build dir)
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/${basename}.json"
+        "${CMAKE_CURRENT_BINARY_DIR}/${basename}.json"
+        COPYONLY)
+
+    # Install JSON library descriptor files into datadir (if they exist)
     install (FILES "${CMAKE_CURRENT_SOURCE_DIR}/${basename}.json"
       DESTINATION ${CMAKE_INSTALL_DATADIR}/upm/${basename}
       COMPONENT ${CMAKE_PROJECT_NAME})

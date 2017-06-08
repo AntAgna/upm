@@ -1,16 +1,13 @@
+#ifndef __UPM_I__
+#define __UPM_I__
+
 %include "std_string.i"
 %include "cpointer.i"
 %include "stdint.i"
 %include "typemaps.i"
 %include "upm_exception.i"
 
-/* Import additional SWIG helps (not exposed in wrapper) */
-%import _upm.i
-
-%{
-#include "version.hpp"
-%}
-%include "version.hpp"
+%import "_upm.i"
 
 %apply int { speed_t };
 %apply int { mraa_result_t };
@@ -35,7 +32,6 @@ void cleanUp()
     {;}
 }
 %}
-void cleanUp();
 #endif
 
 #if (SWIGJAVA)
@@ -52,4 +48,6 @@ void cleanUp();
  */
 #if defined(SWIGPYTHON) && defined(BUILDDOC)
 %include "pyupm_doxy2swig.i"
+#endif
+
 #endif

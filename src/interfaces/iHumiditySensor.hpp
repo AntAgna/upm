@@ -1,42 +1,72 @@
-/*
- * Author: Henry Bruce <henry.bruce@intel.com>
- * Copyright (c) 2015 Intel Corporation.
- *
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
 #pragma once
-#include "iModuleStatus.hpp"
+
+#include <map>
+#include <vector>
+
+#include "iSensorType.hpp"
 
 namespace upm
 {
-/**
- * @brief Interface for Humidity Sensors
- */
+    /**
+     * iHumiditySensor abstract class.
+     *
+     * Provides a common interface for all sensors which detect humidity.
+     */
+    class iHumiditySensor : public virtual iSensorType
+    {
+        public:
+            /**
+             * Read and return all values for this sensor as a map of sources
+             * to values.
+             *
+             * @return Map of sources to values.
+             */
+            virtual std::map<std::string, float> HumidityAll();
 
-   class IHumiditySensor : virtual public IModuleStatus
-   {
-   public:
-       virtual int getHumidityRelative () = 0;
-       virtual ~IHumiditySensor() {}
-   };
+            /**
+             * Read and return a single value from the source provided
+             *
+             * @param source Target source to read
+             *
+             * @throws std::invalid_argument If source is NOT valid for this sensor
+             *
+             * @return Map of sources to values.
+             */
+            virtual float HumidityForSource(std::string source);
 
+            /**
+             * Read and return all values for this sensor for the provided
+             * vector of sources.
+             *
+             * @param sources Vector of sources to read
+             *
+             * @return Map of sources to values.
+             */
+            virtual std::map<std::string, float> HumidityForSources(std::vector<std::string> sources) = 0;
+
+            /**
+             * Add a pointer to this type and a proxy function pointer for
+             * serializing all values from this sensor type.
+             */
+            iHumiditySensor();
+
+            /**
+             * Read and return all values for this sensor as JSON
+             *
+             * @return JSON string of humidity values
+             */
+            virtual std::string JsonHumidity() const;
+
+        private:
+            /**
+             * Provide a means to read and serialize values from this sensor
+             * as a static method.  This method, along with a pointer to the
+             * class can be called from a base class
+             *
+             * @param inst Instance of iHumiditySensor to call _JsonHumidity on
+             *
+             * @return JSON string of humidity values (minus wrapping '{' and '}'
+             */
+            static std::string _JsonHumidity(iUpmObject * inst);
+    };
 }
-

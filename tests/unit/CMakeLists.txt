@@ -17,3 +17,12 @@ add_executable(json_tests json/json_tests.cxx)
 target_link_libraries(json_tests GTest::GTest GTest::Main)
 target_include_directories(json_tests PRIVATE "${UPM_COMMON_HEADER_DIRS}/")
 gtest_add_tests(json_tests "" AUTO)
+
+# Unit tests - interfaces library
+add_executable(interfaces_tests
+    interfaces/iUpmObject_tests.cxx
+    interfaces/iSensortType_tests.cxx
+    interfaces/json_init.json)
+configure_file(interfaces/json_init.json json_init.json COPYONLY)
+target_link_libraries(interfaces_tests interfaces GTest::GTest GTest::Main)
+gtest_add_tests(interfaces_tests "" AUTO)

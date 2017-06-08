@@ -1,4 +1,6 @@
 %include "../common_top.i"
+%include "iMraa.i"
+%include "iServoActuator.i"
 
 /* BEGIN Java syntax  ------------------------------------------------------- */
 #ifdef SWIGJAVA

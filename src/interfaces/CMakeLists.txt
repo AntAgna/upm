@@ -1,22 +1,38 @@
-set (libname "interfaces")
-set (libdescription "CXX Interface Library")
-set (module_src ${libname}.cxx)
+# Create a source file for constants
+configure_file (iUpmObject_generated.cxx.in iUpmObject_generated.cxx @ONLY)
 
-upm_module_init()
+upm_mixed_module_init (NAME interfaces
+    DESCRIPTION "CXX Interface Library"
+    CPP_HDR iADC.hpp
+            iCO2Sensor.hpp
+            iHumiditySensor.hpp
+            iLightController.hpp
+            iLightSensor.hpp
+            iMoistureSensor.hpp
+            iMraa.hpp
+            iPressureSensor.hpp
+            iSensorType.hpp
+            iActuatorType.hpp
+            iServoActuator.hpp
+            iTemperatureSensor.hpp
+            iUpmObject.hpp
+    CPP_SRC "${CMAKE_CURRENT_BINARY_DIR}/iUpmObject_generated.cxx"
+            iADC.cxx
+            iCO2Sensor.cxx
+            iHumiditySensor.cxx
+            iLightController.cxx
+            iLightSensor.cxx
+            iMoistureSensor.cxx
+            iMraa.cxx
+            iPressureSensor.cxx
+            iSensorType.cxx
+            iActuatorType.cxx
+            iServoActuator.cxx
+            iTemperatureSensor.cxx
+            iUpmObject.cxx
+    REQUIRES mraa utilities-c)
 
 # Add a PUBLIC include directory to the CMAKE src dir
-target_include_directories (${libname} PUBLIC ${CMAKE_SOURCE_DIR}/src)
-
-# Don't add the hpp files with upm_module_init, this allows
-# them to be installed separately
-set (module_hpp iADC.hpp
-                iCO2Sensor.hpp
-                iHumiditySensor.hpp
-                iLightController.hpp
-                iLightSensor.hpp
-                iModuleStatus.hpp
-                iPressureSensor.hpp
-                iTemperatureSensor.hpp)
-# Install interfaces headers a bit differently
-install (FILES ${module_hpp} DESTINATION include/upm/${libname}
-    COMPONENT ${CMAKE_PROJECT_NAME})
+target_include_directories (interfaces
+    PUBLIC ${CMAKE_SOURCE_DIR}/src
+           ${CMAKE_BINARY_DIR}/src)

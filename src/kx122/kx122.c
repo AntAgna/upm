@@ -103,7 +103,7 @@ Reads multiple continous registers.
 @param len Amount of bytes to read.
 @return UPM result
 */
-static upm_result_t kx122_read_registers(const kx122_context dev, uint8_t reg, uint8_t *buffer, uint len);
+static upm_result_t kx122_read_registers(const kx122_context dev, uint8_t reg, uint8_t *buffer, int len);
 
 /**
 Writes to a register.
@@ -306,7 +306,7 @@ static upm_result_t kx122_read_register(const kx122_context dev, uint8_t reg, ui
   }
 }
 
-static upm_result_t kx122_read_registers(const kx122_context dev, uint8_t reg, uint8_t *buffer, uint len)
+static upm_result_t kx122_read_registers(const kx122_context dev, uint8_t reg, uint8_t *buffer, int len)
 {
   if(dev->using_spi){
     reg |= SPI_READ;
@@ -324,7 +324,7 @@ static upm_result_t kx122_read_registers(const kx122_context dev, uint8_t reg, u
       return UPM_ERROR_OPERATION_FAILED;
     }
 
-    for (size_t i = 0; i < len; i++) {
+    for (int i = 0; i < len; i++) {
       buffer[i] = spi_data_buffer[i + 1];
     }
 
@@ -337,7 +337,7 @@ static upm_result_t kx122_read_registers(const kx122_context dev, uint8_t reg, u
         return UPM_ERROR_OPERATION_FAILED;
       }
       else{
-        for(size_t i = 0; i < len; i++){
+        for(int i = 0; i < len; i++){
           buffer[i] = data_buffer[i];
         }
         return UPM_SUCCESS;
@@ -892,7 +892,7 @@ upm_result_t kx122_disable_buffer(const kx122_context dev)
   return kx122_set_bit_off(dev,KX122_BUF_CNTL2,KX122_BUF_CNTL2_BUFE);
 }
 
-upm_result_t kx122_buffer_init(const kx122_context dev, uint samples, KX122_RES_T res, KX122_BUFFER_MODE_T mode)
+upm_result_t kx122_buffer_init(const kx122_context dev, int samples, KX122_RES_T res, KX122_BUFFER_MODE_T mode)
 {
   assert(dev != NULL);
   kx122_set_sensor_standby(dev);
@@ -925,7 +925,7 @@ upm_result_t kx122_set_buffer_resolution(const kx122_context dev, KX122_RES_T re
   return kx122_set_bit_off(dev, KX122_BUF_CNTL2, KX122_BUF_CNTL2_BRES);
 }
 
-upm_result_t kx122_set_buffer_threshold(const kx122_context dev, uint samples)
+upm_result_t kx122_set_buffer_threshold(const kx122_context dev, int samples)
 {
   assert(dev != NULL);
   if(dev->buffer_res == LOW_RES && samples > MAX_BUFFER_SAMPLES_LOW_RES){
@@ -962,7 +962,7 @@ upm_result_t kx122_clear_buffer(const kx122_context dev)
   return kx122_write_register(dev,KX122_BUF_CLEAR,0xFF); //Writing anything to the register clears the buffer
 }
 
-upm_result_t kx122_get_buffer_status(const kx122_context dev, uint *samples)
+upm_result_t kx122_get_buffer_status(const kx122_context dev, int *samples)
 {
   uint8_t reg_val;
   uint16_t temp; //Using only 10 bits
@@ -982,17 +982,17 @@ upm_result_t kx122_get_buffer_status(const kx122_context dev, uint *samples)
   //Get the amount of samples
   if(dev->buffer_res == LOW_RES){
     //3 axis / sample
-    *samples = ((uint)(int16_t)temp) / 3;
+    *samples = ((int)(int16_t)temp) / 3;
   }
   else{
     //3 axis * MSB/LSB / sample
-    *samples = ((uint)(int16_t)temp) / 6;
+    *samples = ((int)(int16_t)temp) / 6;
   }
 
   return UPM_SUCCESS;
 }
 
-upm_result_t kx122_read_buffer_samples_raw(const kx122_context dev, uint len, float *x_array, float *y_array, float *z_array)
+upm_result_t kx122_read_buffer_samples_raw(const kx122_context dev, int len, float *x_array, float *y_array, float *z_array)
 {
   assert(dev != NULL);
   if(dev->buffer_res == LOW_RES){
@@ -1009,7 +1009,7 @@ upm_result_t kx122_read_buffer_samples_raw(const kx122_context dev, uint len, fl
   }
 
   if(dev->buffer_res == HIGH_RES){
-    for (size_t i = 0; i < len; i+= HIGH_RES_SAMPLE_MODIFIER) {
+    for (int i = 0; i < len; i+= HIGH_RES_SAMPLE_MODIFIER) {
       if(dev->buffer_mode != KX122_FILO_MODE){
         if(x_array){
           x_array[i / HIGH_RES_SAMPLE_MODIFIER] = (float)((int16_t) (buffer[i + 1] << 8) | buffer[i]);
@@ -1035,7 +1035,7 @@ upm_result_t kx122_read_buffer_samples_raw(const kx122_context dev, uint len, fl
     }
   }
   else{ //Low resolution
-    for (size_t i = 0; i < len; i+= LOW_RES_SAMPLE_MODIFIER) {
+    for (int i = 0; i < len; i+= LOW_RES_SAMPLE_MODIFIER) {
       if(dev->buffer_mode != KX122_FILO_MODE){
         if(x_array){
           x_array[i / LOW_RES_SAMPLE_MODIFIER] = (float)(int8_t)buffer[i];
@@ -1064,14 +1064,14 @@ upm_result_t kx122_read_buffer_samples_raw(const kx122_context dev, uint len, fl
   return UPM_SUCCESS;
 }
 
-upm_result_t kx122_read_buffer_samples(const kx122_context dev, uint len, float *x_array, float *y_array, float *z_array)
+upm_result_t kx122_read_buffer_samples(const kx122_context dev, int len, float *x_array, float *y_array, float *z_array)
 {
   assert(dev != NULL);
   if(kx122_read_buffer_samples_raw(dev,len,x_array,y_array,z_array) != UPM_SUCCESS){
     return UPM_ERROR_OPERATION_FAILED;
   }
 
-  for (size_t i = 0; i < len; i++) {
+  for (int i = 0; i < len; i++) {
     if(x_array){
       x_array[i] = (x_array[i] * dev->buffer_accel_scale) * GRAVITY;
     }

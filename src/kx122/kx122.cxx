@@ -276,7 +276,7 @@ void KX122::disableBuffer()
   }
 }
 
-void KX122::bufferInit(uint samples, KX122_RES_T res, KX122_BUFFER_MODE_T mode)
+void KX122::bufferInit(int samples, KX122_RES_T res, KX122_BUFFER_MODE_T mode)
 {
   if(kx122_buffer_init(m_kx122,samples,res,mode)){
     throw std::runtime_error(std::string(__FUNCTION__) + "kx122_buffer_init failed");
@@ -290,7 +290,7 @@ void KX122::setBufferResolution(KX122_RES_T res)
   }
 }
 
-void KX122::setBufferThreshold(uint samples)
+void KX122::setBufferThreshold(int samples)
 {
   if(kx122_set_buffer_threshold(m_kx122,samples)){
     throw std::runtime_error(std::string(__FUNCTION__) + "kx122_set_buffer_threshold failed");
@@ -304,21 +304,21 @@ void KX122::setBufferMode(KX122_BUFFER_MODE_T mode)
   }
 }
 
-void KX122::getBufferStatus(uint *samples)
+void KX122::getBufferStatus(int *samples)
 {
   if(kx122_get_buffer_status(m_kx122,samples)){
     throw std::runtime_error(std::string(__FUNCTION__) + "kx122_get_buffer_status failed");
   }
 }
 
-void KX122::getRawBufferSamples(uint len, float *x_array, float *y_array, float *z_array)
+void KX122::getRawBufferSamples(int len, float *x_array, float *y_array, float *z_array)
 {
   if(kx122_read_buffer_samples_raw(m_kx122,len,x_array,y_array,z_array)){
     throw std::runtime_error(std::string(__FUNCTION__) + "kx122_read_buffer_samples_raw failed");
   }
 }
 
-void KX122::getBufferSamples(uint len, float *x_array, float *y_array, float *z_array)
+void KX122::getBufferSamples(int len, float *x_array, float *y_array, float *z_array)
 {
   if(kx122_read_buffer_samples(m_kx122,len,x_array,y_array,z_array)){
     throw std::runtime_error(std::string(__FUNCTION__) + "kx122_read_buffer_samples failed");

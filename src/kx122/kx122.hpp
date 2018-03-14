@@ -424,7 +424,7 @@ namespace upm{
       @param mode One of the KX122_BUFFER_MODE_T values.
       @throws std::runtime_error on failure.
       */
-      void bufferInit(uint samples, KX122_RES_T res, KX122_BUFFER_MODE_T mode);
+      void bufferInit(int samples, KX122_RES_T res, KX122_BUFFER_MODE_T mode);
 
       /**
       Sets the buffer resolution.
@@ -450,7 +450,7 @@ namespace upm{
       @param samples Amount of samples to trigger the watermark interrupt.
       @throws std::runtime_error on failure.
       */
-      void setBufferThreshold(uint samples);
+      void setBufferThreshold(int samples);
 
       /**
       Sets the buffer operating mode.
@@ -470,10 +470,10 @@ namespace upm{
       /**
       Gets the current amount of samples in the buffer.
 
-      @param samples Pointer to an uint variable to store the data.
+      @param samples Pointer to an int variable to store the data.
       @throws std::runtime_error on failure.
       */
-      void getBufferStatus(uint *samples);
+      void getBufferStatus(int *samples);
 
       /**
       Gets the specified amount of raw acceleration samples from the buffer.
@@ -486,7 +486,7 @@ namespace upm{
       @param z_array Pointer to an floating point array to store the z-axis data. Can be set to NULL if not wanted.
       @throws std::runtime_error on failure.
       */
-      void getRawBufferSamples(uint len, float *x_array, float *y_array, float *z_array);
+      void getRawBufferSamples(int len, float *x_array, float *y_array, float *z_array);
 
       /**
       Gets the specified amount of converted (m/s^2) acceleration samples from the buffer.
@@ -499,7 +499,7 @@ namespace upm{
       @param z_array Pointer to an floating point array to store the z-axis data. Can be set to NULL if not wanted.
       @throws std::runtime_error on failure.
       */
-      void getBufferSamples(uint len, float *x_array, float *y_array, float *z_array);
+      void getBufferSamples(int len, float *x_array, float *y_array, float *z_array);
 
       /**
       Clears the buffer, removing all existing samples from the buffer.

@@ -575,7 +575,7 @@ See the other buffer functions for details about the different parameter values.
 @param mode One of the KX122_BUFFER_MODE_T values.
 @return UPM result.
 */
-upm_result_t kx122_buffer_init(const kx122_context dev, uint samples, KX122_RES_T res, KX122_BUFFER_MODE_T mode);
+upm_result_t kx122_buffer_init(const kx122_context dev, int samples, KX122_RES_T res, KX122_BUFFER_MODE_T mode);
 
 /**
 Sets the buffer resolution.
@@ -603,7 +603,7 @@ Sensor needs to be in standby mode when setting the buffer threshold.
 @param samples Amount of samples to trigger the watermark interrupt.
 @return UPM result.
 */
-upm_result_t kx122_set_buffer_threshold(const kx122_context dev, uint samples);
+upm_result_t kx122_set_buffer_threshold(const kx122_context dev, int samples);
 
 /**
 Sets the buffer operating mode.
@@ -625,10 +625,10 @@ upm_result_t kx122_set_buffer_mode(const kx122_context dev, KX122_BUFFER_MODE_T 
 Gets the current amount of samples in the buffer.
 
 @param dev The device context.
-@param samples Pointer to an uint variable to store the data.
+@param samples Pointer to an int variable to store the data.
 @return UPM result.
 */
-upm_result_t kx122_get_buffer_status(const kx122_context dev, uint *samples);
+upm_result_t kx122_get_buffer_status(const kx122_context dev, int *samples);
 
 /**
 Gets the specified amount of raw acceleration samples from the buffer.
@@ -642,7 +642,7 @@ Make sure the array size is atleast the amount of samples to be read.
 @param z_array Pointer to an floating point array to store the z-axis data. Can be set to NULL if not wanted.
 @return UPM result.
 */
-upm_result_t kx122_read_buffer_samples_raw(const kx122_context dev, uint len, float *x_array, float *y_array, float *z_array);
+upm_result_t kx122_read_buffer_samples_raw(const kx122_context dev, int len, float *x_array, float *y_array, float *z_array);
 
 /**
 Gets the specified amount of converted (m/s^2) acceleration samples from the buffer.
@@ -656,7 +656,7 @@ Make sure the array size is atleast the amount of samples to be read.
 @param z_array Pointer to an floating point array to store the z-axis data. Can be set to NULL if not wanted.
 @return UPM result.
 */
-upm_result_t kx122_read_buffer_samples(const kx122_context dev, uint len, float *x_array, float *y_array, float *z_array);
+upm_result_t kx122_read_buffer_samples(const kx122_context dev, int len, float *x_array, float *y_array, float *z_array);
 
 /**
 Clears the buffer, removing all existing samples from the buffer.

@@ -470,10 +470,10 @@ namespace upm{
       /**
       Gets the current amount of samples in the buffer.
 
-      @param samples Pointer to an int variable to store the data.
+      @return number of samples in the buffer.
       @throws std::runtime_error on failure.
       */
-      void getBufferStatus(int *samples);
+      int getBufferStatus();
 
       /**
       Gets the specified amount of raw acceleration samples from the buffer.
@@ -487,19 +487,15 @@ namespace upm{
       @throws std::runtime_error on failure.
       */
       void getRawBufferSamples(int len, float *x_array, float *y_array, float *z_array);
-
+      
       /**
       Gets the specified amount of converted (m/s^2) acceleration samples from the buffer.
 
-      Make sure the array size is at least the amount of samples to be read.
-
       @param len The amount of samples to read from the buffer.
-      @param x_array Pointer to an floating point array to store the x-axis data. Can be set to NULL if not wanted.
-      @param y_array Pointer to an floating point array to store the y-axis data. Can be set to NULL if not wanted.
-      @param z_array Pointer to an floating point array to store the z-axis data. Can be set to NULL if not wanted.
+      @return vector containing x, y & z-axis data
       @throws std::runtime_error on failure.
       */
-      void getBufferSamples(int len, float *x_array, float *y_array, float *z_array);
+      std::vector<float> getBufferSamples(int len);
 
       /**
       Clears the buffer, removing all existing samples from the buffer.

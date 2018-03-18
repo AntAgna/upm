@@ -26,7 +26,7 @@ public class KX122_Example {
 	public static void main(String[] args) throws InterruptedException {
 		//! [Interesting]
 		// Instantiate a KX122
-		upm_kx122.KX122 kx122 = new upm_kx122.KX122(0, -1, 24);
+		upm_kx122.KX122 kx122 = new upm_kx122.KX122(0, -1, 24, 10000);
 
 		// Reset the device
 		kx122.softwareReset();

@@ -44,7 +44,7 @@ int main(int argc, char **argv)
   signal(SIGINT,sig_handler);
 
   //! [Interesting]
-  upm::KX122 sensor(0,-1,24);
+  upm::KX122 sensor(0, -1, 24, 10000);
 
   sensor.softwareReset();
   sensor.deviceInit(KX122_ODR_50,HIGH_RES,KX122_RANGE_2G);

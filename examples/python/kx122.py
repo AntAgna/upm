@@ -28,7 +28,7 @@ from upm import pyupm_kx122
 
 def main():
     # Instantiate a KX122
-    kx122_sensor = pyupm_kx122.KX122(0, -1, 24)
+    kx122_sensor = pyupm_kx122.KX122(0, -1, 24, 10000)
 
     # Reset the device
     kx122_sensor.softwareReset()

@@ -25,7 +25,7 @@
 var kx122 = require("jsupm_kx122");
 
 // Instantiate a KX122
-var kx122_sensor = new kx122.KX122(0, -1, 24);
+var kx122_sensor = new kx122.KX122(0, -1, 24, 10000);
 
 // Reset the device
 kx122_sensor.softwareReset();
